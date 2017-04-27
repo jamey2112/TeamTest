@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <link href="Content/jquery-ui.css" rel="stylesheet" />
+    <link href="Content/jquery-ui.structure.css" rel="stylesheet" />
+    <link href="Content/jquery-ui.theme.css" rel="stylesheet" />
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <style>
+        h1 {
+          color: #5a677a;
+          font-family: sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead th, td {
+            border-bottom: 1px solid #c0c0c0;
+        }
+
+        .glyphicon {
+            border: 1px solid #c0c0c0 !important;
+            padding:3px !important;
+            border-radius: 4px !important;
+            cursor:pointer !important;
+        }
+
+        .glyphicon-remove:hover {
+            color: red !important;
+        }
+        .glyphicon-edit:hover {
+            color: green !important;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(0, 0, 127, 0.075);
+            cursor:default;
+        }
+    </style>
+    <script src="Scripts/jquery-1.9.1.js"></script>
+    <script src="Scripts/jquery-ui.js"></script>
+    <script src="Scripts/angular.js"></script>
+    <script src="Scripts/angular-modal-service.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <script src="app.js"></script>
+</head>
+<body ng-app="TestApp" ng-controller="TestCtrl">
+
+    <!--Add your HTML here-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{title}}</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div id="sortedBy">Sorted by {{ sortColumn }} (Click column header to change)</div>
+                <input type="button" class="btn btn-default" ng-click="reverseSortFn()" style="margin-top:5px;" value="Reverse Sort" />
+            </div>
+            <div class="col-md-4">
+                Jersey Number Range Slider: {{ rangeMin }} - {{ rangeMax }}
+                <div style="margin-top:5px;" id="slider-range"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <input type="button" class="btn btn-default" ng-click="showAddPlayerModal()" value="Add Player" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Id
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Number
+                            </th>
+                            <th ng-click="sortData('Position')" style="cursor:pointer; text-decoration:underline;" title="sort by position">
+                                Position
+                            </th>
+                            <th ng-click="sortData('Team')" style="cursor:pointer; text-decoration:underline;" title="sort by team">
+                                Team
+                            </th>
+                            <th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="p in players | orderBy: sortColumn:reverseSort | filter:filterNumber">
+                            <td>{{ p.Id }}</td>
+                            <td>
+                                <span ng-hide="ShowDetails">{{ p.Name }}</span>
+                                <input type="text" class="form-control" ng-model="p.Name" ng-show="ShowDetails" />
+                            </td>
+                            <td>{{ p.Number }}</td>
+                            <td>{{ p.Position }}</td>
+                            <td>{{ p.Team }}</td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="glyphicon glyphicon-edit" ng-click="ShowDetails = !ShowDetails" title="Edit Player"></span>&nbsp;
+                                    <span class="glyphicon glyphicon-remove" title="Remove Player" ng-click="showDeletePlayerModal(p.Id, p.Name)"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <footer style="margin-top:20px;">
+            <div class="pull-right" style="color:#c0c0c0;">2017 - Jamey Stiles</div>
+        </footer>
+
+    </div>
+
+
+    <script>
+        $(function () {
+            $("#slider-range").slider({
+                range: true,
+                min: 0,
+                max: 99,
+                values: [0, 99],
+                slide: function (event, ui) {
+                    var scope = angular.element("#slider-range").scope();
+                    scope.rangeMin = ui.values[0];
+                    scope.rangeMax = ui.values[1];
+                    scope.$apply();
+                }
+            });
+        });
+    </script>
+
+    <!---------------------->
+
+
+</body>
+</html>
